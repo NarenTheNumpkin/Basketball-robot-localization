@@ -45,6 +45,3 @@ x_pred = pred_np[:, 0]
 y_pred = pred_np[:, 1]
 
 plot(x_truth, y_truth, x_pred, y_pred)
-
-# print(truth_np)
-# print(pred_np)

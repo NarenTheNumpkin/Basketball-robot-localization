@@ -35,7 +35,3 @@ class Localization(Dataset):
 
     def __len__(self):
         return len(self.table)
-
-# localization = Localization()
-# print(localization[0][0].squeeze().shape)
-# print(localization[0][0].flatten().shape)

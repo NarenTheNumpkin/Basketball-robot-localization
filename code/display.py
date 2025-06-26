@@ -19,7 +19,6 @@ def display(delay = 100):
 
 def test():
     image = cv.imread("/Users/naren/Desktop/Robocon_2025/dataset/images/img_20250622_024617_073870.jpg")
-    # cv.imshow("image", image[200:])
     print(image[200:].shape)
     cv.waitKey(0)
 

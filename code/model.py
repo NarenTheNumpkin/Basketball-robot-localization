@@ -30,20 +30,14 @@ class LocalizationNN(nn.Module):
         self.fc4 = nn.Linear(64, 2)
 
     def forward(self, x):
-        # print(f"Initial {x.shape}")
         x = self.flatten(x)
-        # print(f"After flatten {x.shape}")
         x = self.fc1(x)
-        # print(f"After fc1 {x.shape}")
         x = self.relu(x)
         x = self.fc2(x)
-        # print(f"After fc2 {x.shape}")
         x = self.relu(x)
         x = self.fc3(x)
-        # print(f"After fc3 {x.shape}")
         x = self.relu(x)
         x = self.fc4(x)
-        # print(f"After fc4 {x.shape}")
 
         return x
 
