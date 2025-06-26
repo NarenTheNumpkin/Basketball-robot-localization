@@ -4,7 +4,28 @@
 \geometry{left=1.5cm, right=1.5cm, top=2.54cm, bottom=2.54cm}
 \usepackage{graphicx, hyperref, setspace, amsmath, amssymb, titlesec, fancyhdr, multicol, parskip, indentfirst, etoolbox, caption, cite, xcolor}
 
+\titleformat{\section}{\centering\large\scshape}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{1em}{}
+\setstretch{1.0} 
+\setlength{\parskip}{6pt} 
+\titlespacing{\section}{0pt}{6pt}{6pt}
+\titlespacing{\subsection}{0pt}{6pt}{6pt}
+\titlespacing{\subsubsection}{0pt}{6pt}{6pt}
+
 \title{Vision-Based Localization for Autonomous Basketball Robots}
+
+\date{} 
+\captionsetup{labelfont={small,sc}, textfont={small,sc}}
+
+\renewcommand{\thesection}{\Roman{section}.}
+\renewcommand{\thesubsection}{\textit{\Alph{subsection}.}}
+\renewcommand{\thesubsubsection}{\textit{\arabic{subsubsection}.}}
+\renewcommand{\thetable}{\Roman{table}} 
+\renewcommand{\thefigure}{\Roman{figure}} 
+
+\titleformat{\subsection}{\normalfont\large\itshape}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\itshape}{\thesubsubsection}{1em}{}
+
 
 \makeatletter
 \renewcommand{\maketitle}{
@@ -41,6 +62,31 @@
     \textit{Chennai, India}\\
     \texttt{sreejon.mondal2023@vitstudent.ac.in}
     \vfill\null
+\end{multicols}
+
+\singlespacing
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0.5cm}
+
+\begin{multicols}{2}
+\setlength{\columnsep}{0.5cm}
+
+\noindent \textbf{\textit{Abstract---}
+Localization is a fundamental capability for autonomous robots, enabling them 
+to operate effectively in dynamic environments. In Robocon 2025, accurate and 
+reliable localization is crucial for improving shooting precision, avoiding 
+collisions with other robots, and navigating the competition field efficiently. 
+In this paper, we propose a hybrid localization algorithm that integrates classical 
+techniques with learning-based methods, relying solely on visual data from the court’s
+floor to achieve self-localization on the basketball field
+}
+
+\small	
+\noindent \textbf{
+  \textit{Keywords---}\textit{Robot Localization, Autonomous Navigation, Neural Networks, Robocon}}
+
+
+
 \end{multicols}
 
 \end{document}
