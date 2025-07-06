@@ -3,6 +3,8 @@
 \usepackage{geometry}
 \geometry{left=1.5cm, right=1.5cm, top=2.54cm, bottom=2.54cm}
 \usepackage{graphicx, hyperref, setspace, amsmath, amssymb, titlesec, fancyhdr, multicol, parskip, indentfirst, etoolbox, caption, cite, xcolor}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 \titleformat{\section}{\centering\large\scshape}{\thesection}{1em}{}
 \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{1em}{}
@@ -12,7 +14,7 @@
 \titlespacing{\subsection}{0pt}{6pt}{6pt}
 \titlespacing{\subsubsection}{0pt}{6pt}{6pt}
 
-\title{Vision-Based Localization for Autonomous Basketball Robots}
+\title{Real-Time Localization Framework for Autonomous Basketball Robots}
 
 \date{} 
 \captionsetup{labelfont={small,sc}, textfont={small,sc}}
@@ -93,8 +95,40 @@ floor to achieve self-localization on the basketball field.
 
 \section{Related Work}
 \section{Methodology}
+Our approach is a two-step process that begins with \textbf{Preprocessing} the image,
+followed by passing it to the model for \textbf{Inference}.
+\subsection{Preprocessing}
+The input image is converted from the RGB color space to the HSV color space, then the white regions are masked out using two predefined HSV ranges.
+The image is downsampled through a radial scan, flattened, and finally passed through the neural network.
 
-
+% add diagram here of flowchart
+% also add labels in the paragarphs pointing to images and algorithms like figure a, etc
+\begin{algorithm}[H]
+\caption{Downsampling}
+\begin{algorithmic}[1]
+\Statex \textbf{Input: }Image
+\State $H \gets$ Image.height
+\State $W \gets$ Image.width
+\State $R \gets$ Black Image
+\For{angle $\gets$ 0 to 180 step 2}
+    \State $lastPixel \gets 0$
+    \State $cx \gets \text{H / 2}$
+    \State $cy \gets \text{W}$
+    \For{d $\gets$ 0 to max(H, W)}
+        \State $x \gets cx + d \times \cos(angle)$
+        \State $y \gets cy - d \times \sin(angle)$
+        \If{$0 \leq x < \text{W} \ \textbf{and} \ 0 \leq y < \text{H}$}
+          \State $pixel \gets Image[y][x]$
+          \If{lastPixel = 255 and pixel $\neq$ 255}
+            \State $R[y][x] \gets 255 $ 
+          \EndIf
+          \State $lastPixel \gets pixel$
+        \EndIf
+    \EndFor
+\EndFor
+\State \textbf{Return} R
+\end{algorithmic}
+\end{algorithm}
 \section{Results and Analysis}
 
 \section{Conclusion and Future Work}
