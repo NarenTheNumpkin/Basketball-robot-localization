@@ -88,23 +88,30 @@ floor to achieve self-localization on the basketball field.
   \textit{Keywords---}\textit{Robot Localization, Autonomous Navigation, Neural Networks, Robocon}}
 
 \section{Introduction}
+\par \noindent
 \textbf{Section II} reviews existing methods and prior research related to this work. 
 \textbf{Section III} provides a detailed description of our proposed algorithm, approach, and model architecture. 
 \textbf{Section IV} provides the results obtained from our experiments. 
 \textbf{Section V} evaluates the accuracy of our approach and discusses potential directions for future work.
 
+
 \section{Related Work}
+
 \section{Methodology}
-Our approach is a two-step process that begins with \textbf{Preprocessing} the image,
+\par \noindent Our approach is a two-step process that begins with \textbf{Preprocessing} the image,
 followed by passing it to the model for \textbf{Inference}.
 \subsection{Preprocessing}
-The input image is converted from the RGB color space to the HSV color space, then the white regions are masked out using two predefined HSV ranges.
+\par \noindent The input image having dimensions (640 $\times$ 480 $\times$ 3) is converted from the RGB color space to the HSV color space, then the white regions are masked out using two predefined HSV ranges.
 The image is downsampled through a radial scan, flattened, and finally passed through the neural network.
 
-% add diagram here of flowchart
-% also add labels in the paragarphs pointing to images and algorithms like figure a, etc
+\par \noindent
+% (TODO) also add labels in the paragarphs pointing to images and algorithms like figure a, etc
+
+
+% (TODO) add diagram here of flowchart
+\includegraphics[width=0.5\textwidth]{../results/Flowchart.png} % fix image size and label size
 \begin{algorithm}[H]
-\caption{Downsampling}
+  \caption{Downsampling}
 \begin{algorithmic}[1]
 \Statex \textbf{Input: }Image
 \State $H \gets$ Image.height
@@ -112,8 +119,8 @@ The image is downsampled through a radial scan, flattened, and finally passed th
 \State $R \gets$ Black Image
 \For{angle $\gets$ 0 to 180 step 2}
     \State $lastPixel \gets 0$
-    \State $cx \gets \text{H / 2}$
-    \State $cy \gets \text{W}$
+    \State $cx \gets \text{W / 2}$
+    \State $cy \gets \text{H}$
     \For{d $\gets$ 0 to max(H, W)}
         \State $x \gets cx + d \times \cos(angle)$
         \State $y \gets cy - d \times \sin(angle)$
@@ -129,8 +136,28 @@ The image is downsampled through a radial scan, flattened, and finally passed th
 \State \textbf{Return} R
 \end{algorithmic}
 \end{algorithm}
-\section{Results and Analysis}
 
+\subsection{Model Architecture}
+\par \noindent
+The proposed model is a feedforward neural network consisting of a flattening layer followed 
+by four fully connected layers. The first 200 pixels from the top of the image are removed 
+to reduce the input size, as they do not carry useful information.
+
+\par \noindent
+The resulting image with dimensions (640 $\times$ 280 $\times$ 1) is flattened into a vector 
+of size 1,79,200 and passed through the first linear layer, followed by a ReLU activation function.
+The subsequent layers have sizes 1024, 256, and 64, each followed by a ReLU activation. 
+The final layer outputs a 2-dimensional vector representing the predicted $x$ and $y$ positions of the robot.
+
+\par \noindent
+The rationale for using this relatively simple model lies in the simplicity of the input images 
+and to reducing inference time.
+%write about figure number which shows the architecture
+
+% write about dataset collection and gazebo simulation
+% also write about training the model, epochs, optimiser, cost fn, batch size, etc
+
+\section{Results and Analysis}
 \section{Conclusion and Future Work}
 
 \section{References}

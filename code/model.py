@@ -109,4 +109,4 @@ if __name__ == "__main__":
     plt.grid(True)
     plt.show()
 
-#summary(model, input_size = [8, 1, 480, 640])
+summary(model, input_size = [8, 1, 480, 640])
