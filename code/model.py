@@ -10,13 +10,14 @@ import time
 from argparse import ArgumentParser
 
 device = "mps"
+BATCH_SIZE = 8
 
 localization = Localization()
 
 train_dataset, test_dataset = random_split(dataset = localization, lengths = [0.9, 0.1])
 
-train_dataloader = DataLoader(dataset = train_dataset, batch_size = 8, shuffle = True)
-test_dataloader = DataLoader(dataset = test_dataset, batch_size = 8, shuffle = True)
+train_dataloader = DataLoader(dataset = train_dataset, batch_size = BATCH_SIZE, shuffle = True)
+test_dataloader = DataLoader(dataset = test_dataset, batch_size = BATCH_SIZE, shuffle = True)
 
 class LocalizationNN(nn.Module):
 
@@ -109,4 +110,4 @@ if __name__ == "__main__":
     plt.grid(True)
     plt.show()
 
-summary(model, input_size = [8, 1, 480, 640])
+    summary(model, input_size = [8, 1, 280, 640])

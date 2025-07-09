@@ -5,6 +5,7 @@
 \usepackage{graphicx, hyperref, setspace, amsmath, amssymb, titlesec, fancyhdr, multicol, parskip, indentfirst, etoolbox, caption, cite, xcolor}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{cuted}
 
 \titleformat{\section}{\centering\large\scshape}{\thesection}{1em}{}
 \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{1em}{}
@@ -96,7 +97,7 @@ floor to achieve self-localization on the basketball field.
 
 
 \section{Related Work}
-
+%uently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains
 \section{Methodology}
 \par \noindent Our approach is a two-step process that begins with \textbf{Preprocessing} the image,
 followed by passing it to the model for \textbf{Inference}.
@@ -106,10 +107,12 @@ The image is downsampled through a radial scan, flattened, and finally passed th
 
 \par \noindent
 % (TODO) also add labels in the paragarphs pointing to images and algorithms like figure a, etc
+% fix image size and label size
 
-
-% (TODO) add diagram here of flowchart
-\includegraphics[width=0.5\textwidth]{../results/Flowchart.png} % fix image size and label size
+{ \centering
+  \includegraphics[width=0.5\textwidth]{../results/Flowchart.png}\\
+  \captionof{figure}{preprocessing pipeline}\label{fig:flowchart}
+}
 \begin{algorithm}[H]
   \caption{Downsampling}
 \begin{algorithmic}[1]
@@ -152,6 +155,13 @@ The final layer outputs a 2-dimensional vector representing the predicted $x$ an
 \par \noindent
 The rationale for using this relatively simple model lies in the simplicity of the input images 
 and to reducing inference time.
+
+%maybe could add input dimensions for each layer??
+{ \centering
+ \includegraphics[width=0.2\columnwidth]{../results/model.png}\\
+ \captionof{figure}{architecture diagram}\label{pinki}
+}
+
 %write about figure number which shows the architecture
 
 % write about dataset collection and gazebo simulation
