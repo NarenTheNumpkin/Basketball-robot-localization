@@ -167,10 +167,39 @@ and to reducing inference time.
 % write about dataset collection and gazebo simulation
 % also write about training the model, epochs, optimiser, cost fn, batch size, etc
 
-\section{Results and Analysis}
-\section{Conclusion and Future Work}
+\subsection{Dataset} 
 
-\section{References}
+\par \noindent
+A digital twin of the robot was created and simulated in a replica of the Robocon 2025 arena 
+using the Gazebo \cite{gazebo} simulator with the help of ROS 2 \cite{macenski2022ros2}. 
+
+\par \noindent
+The robot was driven through the arena capturing images and corresponding $x$, $y$ coordinates. A 
+TimeSynchronizer was used to synchronize the frame header and the position header. A total of
+6283 images were captured and split into training  and test datasets with a 0.9 to 0.1 ratio.
+Care was taken to include every part of the arena for an unbiased dataset. 
+
+% attach gazebo picture here as well
+
+\section{Results and Analysis}
+% add repo link as well
+\section{Conclusion}  % write about future work as well
+
+\begin{thebibliography}{99}
+
+\bibitem{gazebo}
+N. Koenig and A. Howard, "Design and use paradigms for Gazebo, an open-source 
+multi-robot simulator," 2004 IEEE/RSJ International Conference on Intelligent Robots 
+and Systems (IROS) (IEEE Cat. No.04CH37566), Sendai, Japan, 2004, pp. 2149-2154 vol.3, 
+doi: 10.1109/IROS.2004.1389727.
+  
+\bibitem{macenski2022ros2}
+Steve Macenski, Tully Foote, Brian Gerkey, Chris Lalancette, and William Woodall. 
+\textit{Robot Operating System 2: Design, architecture, and uses in the wild}. 
+Science Robotics, vol. 7, no. 66, 2022. 
+
+
+\end{thebibliography}
 
 \end{multicols}
 
