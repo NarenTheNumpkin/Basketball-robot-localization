@@ -183,7 +183,7 @@ Care was taken to include every part of the arena for an unbiased dataset.
 \subsection{Training}
 \par \noindent
 The model was trained for 15 epochs using an Adam optimizer \cite{kingma2014adam} with an initial learning rate of $10^{-4}$
-and a Mean Squared Error (MSE) loss function in batches of size 8. 
+and a Mean Squared Error (MSE) cost function in batches of size 8. 
 
 \section{Results}
 % add repo link as well
@@ -191,7 +191,11 @@ and a Mean Squared Error (MSE) loss function in batches of size 8.
 Figure IV depicts the loss at each epoch throughout the training process.
 8 independent images at different points of the court were again captured 
 from the simulation and fed into the model, Figure V shows the plot between
-the ground truth and the prediction made.
+the ground truth and the prediction made with an average loss of 0.06 meters.
+
+\par \noindent 
+The code for the paper can be found in the following repository
+\href{https://github.com/NarenTheNumpkin/Basketball-robot-localization}{https://github.com/NarenTheNumpkin/Basketball-robot-localization}
 
 { \centering
  \includegraphics[scale=0.3]{../results/loss-epochs.png}\\
@@ -203,9 +207,19 @@ the ground truth and the prediction made.
  \captionof{figure}{truth vs prediction}\label{pinki}
 }
 
-
-\section{Conclusion}  % write about future work as well
-% maybe include other features such as IMU data, odometry
+\section{Conclusion}  
+\par \noindent
+In this work, we presented a hybrid localization framework for autonomous basketball robots competing 
+in the Robocon 2025 arena. Our approach relies solely on floor images processed through a lightweight
+feedforward neural network. By preprocessing the images to highlight salient floor features and using a simple architecture, 
+we achieved an average prediction error of approximately 0.06 meters, demonstrating the potential of 
+learning-based localization methods. This result shows that even with minimal sensor inputs and modest 
+model complexity, it is possible to achieve sufficiently accurate localization. Future improvements could 
+focus on integrating other sensors such as IMU, wheel odometry, or LIDAR with the vision-based system 
+through filtering techniques like Kalman or particle filters to achieve more robust and reliable 
+localization. Additionally, exploring more neural network architectures may help to improve prediction 
+accuracy. Finally, optimizing the model for deployment on embedded platforms with limited computational
+resources through techniques such as pruning, quantization, or hardware acceleration could be worked upon.
 
 \begin{thebibliography}{99}
 
