@@ -92,6 +92,8 @@ floor to achieve self-localization on the basketball field.
 \par \noindent
 The DD-Robocon is the Indian national entry-level competition to Asia-Pacific Robot Contest (ABU Robocon). The objective of the competition is for college teams to design, build, and operate robots to complete certain tasks. The tasks vary each year and are usually based on cultural, historical, or technological themes related to the host country of the international contest. For Robocon 2025, the theme was Robot Basketball, where two robots had to play the game of basketball following specific rules. The arena consisted of a court of dimensions 15m $\times$ 8m and baskets at a height of 2.4m. Due to the nature of the game, the robots had to move quickly and unpredictably, and take shots from various positions on the court. The robots had to have robust and real-time self-localization determine it's distance from the basket.
 In this paper we propose a vision-based localization system based on the white field lines of the basketball court.
+
+\par \noindent
 \textbf{Section II} reviews existing methods and prior research related to this work. 
 \textbf{Section III} provides a detailed description of our proposed algorithm, approach, and model architecture. 
 \textbf{Section IV} provides the results obtained from our experiments. 
@@ -99,12 +101,13 @@ In this paper we propose a vision-based localization system based on the white f
 
 
 \section{Related Work}
+\par \noindent
 In our earlier methodology, we employed an odometry-based approach for the self-localization of the robots. This system integrated wheel encoders and an Inertial Measurement Unit (IMU), complemented by a TF-Luna LiDAR sensor to estimate the depth between the robot and the basket. However, the TF-Luna sensor demonstrated a limited effective range of approximately 3 to 4 meters and exhibited suboptimal accuracy within this range. Additionally, a significant challenge arose due to the absence of a clearly distinguishable object or surface on the basket, which hindered reliable depth estimation.
 \par \noindent
 In the subsequent approach, we employed an object detection model based on YOLOv8n, trained on a custom dataset to detect the basket. This model was utilized not only for basket detection but also for correcting the robot’s yaw orientation to ensure it consistently faced the target. To estimate the horizontal distance from the basket, we defined discrete zones, with each zone representing a specific distance range. The corresponding zone, selected manually by the pilot based on visual assessment, was then used in conjunction with the detected orientation to determine the appropriate RPM for the shooting mechanism. While this approach facilitated a simplified method for distance estimation, it was inherently dependent on manual selection and coarse approximations, which could lead to reduced accuracy and consistency.
 
 { \centering
-  \includegraphics[scale=0.3]{results/yolo_detection.png}\\
+  \includegraphics[scale=0.23]{../results/yolo_detection.png}\\
   \captionof{figure}{basket detection}\label{fig:basket_detection}
 }
 
@@ -120,7 +123,7 @@ An interactive calibration step is used to relate MiDaS's relative depth to real
 During tracking mode, the system periodically predicts the basket's distance using the learned regression model and overlays the result on the original image alongside the visualized depth map. The output is displayed in a side-by-side format showing both RGB and color-mapped depth views for easier interpretation.
 
 { \centering
-  \includegraphics[width=0.4\textwidth]{results/midas.png}\\
+  \includegraphics[width=0.4\textwidth]{../results/midas.png}\\
   \captionof{figure}{basket depth estimation}\label{fig:basket_midas}
 }
 
@@ -137,7 +140,7 @@ Figure I shows the preprocessing pipline and Algorithm 1 gives the implementatio
 \par \noindent
 
 { \centering
-  \includegraphics[width=0.5\textwidth]{results/Flowchart.png}\\
+  \includegraphics[width=0.5\textwidth]{../results/Flowchart.png}\\
   \captionof{figure}{preprocessing pipeline}\label{fig:flowchart}
 }
 \begin{algorithm}[H]
@@ -186,7 +189,7 @@ and to reducing inference time.
 
 %maybe could add input dimensions for each layer??
 { \centering
- \includegraphics[width=0.2\columnwidth]{results/model.png}\\
+ \includegraphics[width=0.2\columnwidth]{../results/model.png}\\
  \captionof{figure}{architecture diagram}\label{pinki}
 }
 
@@ -204,7 +207,7 @@ Care was taken to include every part of the arena for an unbiased dataset.
 
 % maybe could get a better photo?
 { \centering
- \includegraphics[scale=0.3]{results/gazebo.png}\\
+ \includegraphics[scale=0.3]{../results/gazebo.png}\\
  \captionof{figure}{gazebo simulation}\label{pinki}
 }
 
@@ -226,12 +229,12 @@ The code for the paper can be found in the following repository
 \href{https://github.com/NarenTheNumpkin/Basketball-robot-localization}{https://github.com/NarenTheNumpkin/Basketball-robot-localization}
 
 { \centering
- \includegraphics[scale=0.3]{results/loss-epochs.png}\\
+ \includegraphics[scale=0.3]{../results/loss-epochs.png}\\
  \captionof{figure}{loss curve}\label{pinki}
 }
 
 { \centering
- \includegraphics[scale=0.2]{results/comparison.png}\\
+ \includegraphics[scale=0.2]{../results/comparison.png}\\
  \captionof{figure}{truth vs prediction}\label{pinki}
 }
 
