@@ -23,8 +23,19 @@ def plot(x_truth, y_truth, x_pred, y_pred):
 
     plt.show()
 
+def graph(samples, losses):
+    plt.figure()
+    plt.plot(samples, losses, marker='o', linestyle='-')
+    plt.xlabel("Samples")
+    plt.ylabel("Loss")
+    plt.title("Samples vs Loss Curve")
+    plt.grid(True)
+    plt.show()
+    
+
 def main():
-    plot(x_truth, y_truth, x_pred, y_pred)
+    # plot(x_truth, y_truth, x_pred, y_pred)
+    graph([15, 25, 35, 100, 200, 300, 400, 500, 600], [0.0097, 0.0461, 0.1402, 0.0645, 0.1534, 0.1233, 0.0507, 0.1729, 0.0755])
 
 if __name__ == "__main__":
     main()

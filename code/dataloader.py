@@ -7,9 +7,9 @@ from torch.utils.data import Dataset
 import pandas as pd
 import os
 
-PATH = "/Users/naren/Desktop/Robocon_2025/"
-TRAIN = os.path.join(PATH, "dataset", "real_pose_data.csv")
-IMAGES = os.path.join(PATH, "dataset", "real_images")
+PATH = "/Users/naren/Basketball-robot-localization"
+TRAIN = os.path.join(PATH, "dataset", "pose_data.csv")
+IMAGES = os.path.join(PATH, "dataset", "images")
 TRANSFORMS = v2.Compose(
     [
         v2.ToImage(),

@@ -219,14 +219,46 @@ and a Mean Squared Error (MSE) cost function in batches of size 8.
 \section{Results}
 % add repo link as well
 \par \noindent
-Figure IV depicts the loss at each epoch throughout the training process.
+Figure VIII depicts the loss at each epoch throughout the training process.
 8 independent images at different points of the court were again captured 
-from the simulation and fed into the model, Figure V shows the plot between
-the ground truth and the prediction made with an average loss of 0.06 meters.
+from the simulation and fed into the model, Figure IX shows the plot between
+the ground truth and the prediction made by the model for 8 images in an iteration.
+
+\par \noindent
+Table 1 illustrates the x and y losses for the corresponding number of iterations of images fed
+into the model, Figure VI and VII show the graphical representation of this.
 
 \par \noindent 
 The code for the paper can be found in the following repository
 \href{https://github.com/NarenTheNumpkin/Basketball-robot-localization}{https://github.com/NarenTheNumpkin/Basketball-robot-localization}
+
+\begin{table}[H]
+\centering
+\captionof{table}{Prediction Loss}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{S.No} & \textbf{Iterations} & \textbf{x loss (m)} & \textbf{y loss (m)} \\ \hline
+1             & 15                  & 0.0069              & 0.0097                \\ \hline
+2             & 25                  & 0.0449              & 0.0461                \\ \hline
+3             & 35                  & 0.0523              & 0.1402                \\ \hline
+4             & 100                 & 0.0309              & 0.0645                \\ \hline
+5             & 200                 & 0.0701              & 0.1534                \\ \hline
+6             & 300                 & 0.0528              & 0.1233                \\ \hline
+7             & 400                 & 0.0709              & 0.0507                \\ \hline
+8             & 500                 & 0.0338              & 0.1729                \\ \hline
+9             & 600                 & 0.0412              & 0.0755                \\ \hline
+\end{tabular}
+\end{table}
+
+{ \centering
+ \includegraphics[scale=0.2]{../results/Samples-Loss-x.png}\\
+ \captionof{figure}{x loss}\label{pinki}
+}
+
+{ \centering
+ \includegraphics[scale=0.2]{../results/Samples-Loss-y.png}\\
+ \captionof{figure}{x loss}\label{pinki}
+}
 
 { \centering
  \includegraphics[scale=0.3]{../results/loss-epochs.png}\\
@@ -234,9 +266,10 @@ The code for the paper can be found in the following repository
 }
 
 { \centering
- \includegraphics[scale=0.2]{../results/comparison.png}\\
+ \includegraphics[scale=0.18]{../results/comparison.png}\\
  \captionof{figure}{truth vs prediction}\label{pinki}
 }
+
 
 \section{Conclusion}  
 \par \noindent
