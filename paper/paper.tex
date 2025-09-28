@@ -189,12 +189,16 @@ followed by passing it to the model for \textbf{Inference}.
 The image is downsampled through a radial scan, flattened, and finally passed through the neural network.
 Figure~\ref{fig:flowchart} shows the preprocessing pipline and Algorithm 1 gives the implementation of the downsampling algorithm.
 
-\par \noindent
+\end{multicols}
 
-{ \centering
-  \includegraphics[width=0.5\textwidth]{../results/Flowchart.png}\\
-  \captionof{figure}{preprocessing pipeline}\label{fig:flowchart}
-}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{../results/Flowchart.png}
+\captionof{figure}{Preprocessing pipeline}
+\label{fig:flowchart}
+\end{center}
+
+\begin{multicols}{2}
+
 \begin{algorithm}[H]
   \caption{Downsampling}
 \begin{algorithmic}[1]
