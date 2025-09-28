@@ -11,8 +11,10 @@ import numpy as np
 warnings.filterwarnings("ignore")
 iterations = 100
 
+print("Loading model.....")
 model = LocalizationNN()
 model.load_state_dict(torch.load(os.path.join("..", "pt", "localization_epoch15_20250625_182819.pt")))
+print("Loaded model")
 
 def main():
     pred = []
@@ -48,9 +50,19 @@ def main():
 
     #plot(x_truth, y_truth, x_pred, y_pred)
 
+def specific(index):
+    with torch.no_grad():
+        image = test_dataloader.dataset[index][0]
+        truth = test_dataloader.dataset[index][1]
+        predict = model(image)
+        print(f"prediction : {predict}, actual : {truth}") 
+        loss = (truth - predict)**2
+        print(loss)
+
 def synopsis():
     summary(model, input_size = [8, 1, 280, 640])
 
 if __name__ == "__main__":
     # synopsis()
-    main()
+    # main()
+    specific(5)

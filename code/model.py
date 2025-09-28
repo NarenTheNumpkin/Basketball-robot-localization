@@ -10,11 +10,15 @@ import time
 from argparse import ArgumentParser
 
 device = "mps"
+MODE = "TEST"
 BATCH_SIZE = 8
 
 localization = Localization()
 
-train_dataset, test_dataset = random_split(dataset = localization, lengths = [0.9, 0.1])
+if MODE == "TRAIN":
+    train_dataset, test_dataset = random_split(dataset = localization, lengths = [0.9, 0.1])
+elif MODE == "TEST":
+    train_dataset, test_dataset = random_split(dataset = localization, lengths = [0.9, 0.1], generator = torch.Generator().manual_seed(42))
 
 train_dataloader = DataLoader(dataset = train_dataset, batch_size = BATCH_SIZE, shuffle = True)
 test_dataloader = DataLoader(dataset = test_dataset, batch_size = BATCH_SIZE, shuffle = True)
