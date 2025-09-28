@@ -55,9 +55,16 @@ def specific(index):
         image = test_dataloader.dataset[index][0]
         truth = test_dataloader.dataset[index][1]
         predict = model(image)
-        print(f"prediction : {predict}, actual : {truth}") 
-        loss = (truth - predict)**2
-        print(loss)
+        loss = (truth - predict)
+        print(f"prediction: ({predict[0][0]:.4f}, {predict[0][1]:.4f}), actual: ({truth[0]:.4f}, {truth[1]:.4f})") 
+        print(f"loss: ({loss[0][0]:.4f}, {loss[0][1]:.4f})")
+        return torch.abs(loss)
+
+def specific_iter(iterations):
+    loss = 0
+    for i in range(iterations):
+        loss += specific(i)
+    print(f"Final loss: {loss / iterations}")
 
 def synopsis():
     summary(model, input_size = [8, 1, 280, 640])
@@ -65,4 +72,5 @@ def synopsis():
 if __name__ == "__main__":
     # synopsis()
     # main()
-    specific(5)
+    # specific(5)
+    specific_iter(400)
