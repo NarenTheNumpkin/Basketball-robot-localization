@@ -28,7 +28,7 @@ def main():
             predict = model(image)
 
             print(f"prediction : {predict}, actual : {truth}") 
-            loss += (truth - predict)**2
+            loss += (truth - predict)
         
             pred.append(predict)
             truth_.append(truth)
@@ -52,12 +52,16 @@ def main():
 
 def specific(index):
     with torch.no_grad():
+        import time
+        cur = time.time()
         image = test_dataloader.dataset[index][0]
         truth = test_dataloader.dataset[index][1]
         predict = model(image)
         loss = (truth - predict)
-        print(f"prediction: ({predict[0][0]:.4f}, {predict[0][1]:.4f}), actual: ({truth[0]:.4f}, {truth[1]:.4f})") 
-        print(f"loss: ({loss[0][0]:.4f}, {loss[0][1]:.4f})")
+        #print(f"prediction: ({predict[0][0]:.4f}, {predict[0][1]:.4f}), actual: ({truth[0]:.4f}, {truth[1]:.4f})") 
+        #print(f"loss: ({loss[0][0]:.4f}, {loss[0][1]:.4f})")
+        now = time.time()
+        print(now - cur)
         return torch.abs(loss)
 
 def specific_iter(iterations):
@@ -72,5 +76,5 @@ def synopsis():
 if __name__ == "__main__":
     # synopsis()
     # main()
-    # specific(5)
-    specific_iter(400)
+    specific(5)
+    #specific_iter(55)
