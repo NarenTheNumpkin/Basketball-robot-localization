@@ -21,7 +21,7 @@ def main():
     truth_ = []
 
     with torch.no_grad():
-        loss = 0
+        loss = 0 
         for i in range(0, iterations):
             image = test_dataloader.dataset[i][0]
             truth = test_dataloader.dataset[i][1]
