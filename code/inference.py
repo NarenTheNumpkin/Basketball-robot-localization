@@ -9,8 +9,14 @@ import os
 import warnings
 from plot import plot
 import numpy as np
+from argparse import ArgumentParser
 
 warnings.filterwarnings("ignore")
+
+parser = ArgumentParser(description="selecting model for inference")
+parser.add_argument("--model", type=str, default="simple", choices=["simple", "mobilenet", "efficientnet", "residual"])
+args = parser.parse_args()
+model_name = args.model
 
 BATCH_SIZE = 8
 localization = Localization()
@@ -23,7 +29,6 @@ train_dataloader = DataLoader(dataset = train_dataset, batch_size = BATCH_SIZE, 
 test_dataloader = DataLoader(dataset = test_dataset, batch_size = BATCH_SIZE, shuffle = True)
 
 iterations = 100
-model_name = "mobilenet"
 
 print("Loading model.....")
 
@@ -32,6 +37,7 @@ if model_name == "residual":
     model.load_state_dict(torch.load(os.path.join("residual", "localization_residual_epoch15_20251109_110342.pt")))    
 
 elif model_name == "efficientnet":
+    print("EfficientNet-B0")
     model = models.efficientnet_b0(weights=None)
     original_conv1 = model.features[0][0]
     model.features[0][0] = nn.Conv2d(1, original_conv1.out_channels, 
@@ -44,10 +50,11 @@ elif model_name == "efficientnet":
         nn.Dropout(p=0.2), 
         nn.Linear(num_features, 2)
     )
-    model_path = os.path.join("saved_models", "localization_efficientnet_epoch15_20251109_105024.pt") 
+    model_path = os.path.join("efficient_net", "localization_efficientnet_epoch15_20251109_105024.pt") 
     model.load_state_dict(torch.load(model_path))
 
 elif model_name == "mobilenet":
+    print("MobileNetV2")
     model = models.mobilenet_v2(weights=None)
     original_conv1 = model.features[0][0]
     model.features[0][0] = nn.Conv2d(1, original_conv1.out_channels, 
@@ -60,7 +67,7 @@ elif model_name == "mobilenet":
         nn.Dropout(p=0.2),
         nn.Linear(num_features, 2)
     )
-    model_path = os.path.join("saved_models", "localization_mobilenet_epoch15_20251109_105651.pt") 
+    model_path = os.path.join("mobilenet", "localization_mobilenet_epoch15_20251109_105651.pt") 
     model.load_state_dict(torch.load(model_path))
 
 else:
@@ -78,15 +85,18 @@ def main():
         for i in range(0, iterations):
             image = test_dataloader.dataset[i][0]
             truth = test_dataloader.dataset[i][1]
+            image = image.unsqueeze(0) # add the batch dimension or the CNN will throw error
             predict = model(image)
-
+            predict = predict.squeeze(0)
             print(f"prediction : {predict}, actual : {truth}") 
-            loss += (truth - predict)
-        
+            # loss += (truth - predict)
+            se = torch.pow(truth - predict, 2)
+            mse = torch.mean(se)
+            loss += mse.item()
             pred.append(predict)
             truth_.append(truth)
 
-        print(f"Final loss is {(loss / iterations)}")
+        print(f"Final MSE loss is {(loss / iterations)}")
 
     truth_np = np.stack([t.numpy().squeeze() for t in truth_])
     pred_np = np.stack([p.numpy().squeeze() for p in pred])
@@ -109,6 +119,7 @@ def specific(index):
         cur = time.time()
         image = test_dataloader.dataset[index][0]
         truth = test_dataloader.dataset[index][1]
+        image = image.unsqueeze(0)
         predict = model(image)
         loss = (truth - predict)
         #print(f"prediction: ({predict[0][0]:.4f}, {predict[0][1]:.4f}), actual: ({truth[0]:.4f}, {truth[1]:.4f})") 
@@ -128,6 +139,6 @@ def synopsis():
 
 if __name__ == "__main__":
     # synopsis()
-    # main()
-    print(specific(5)[0])
+    main()
+    # print(specific(5)[0])
     # specific_iter(15)

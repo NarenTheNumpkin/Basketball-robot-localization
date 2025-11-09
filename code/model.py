@@ -10,23 +10,6 @@ import time
 from argparse import ArgumentParser
 from torchvision import models
 
-device = "mps"
-MODE = "TEST"
-BATCH_SIZE = 8
-
-localization = Localization()
-
-if MODE == "TRAIN":
-    train_dataset, test_dataset = random_split(dataset = localization, lengths = [0.9, 0.1])
-elif MODE == "TEST":
-    train_dataset, test_dataset = random_split(dataset = localization, 
-                                               lengths = [0.1, 0.9], 
-                                               generator = torch.Generator().manual_seed(42)
-                                               )
-
-train_dataloader = DataLoader(dataset = train_dataset, batch_size = BATCH_SIZE, shuffle = True)
-test_dataloader = DataLoader(dataset = test_dataset, batch_size = BATCH_SIZE, shuffle = True)
-
 class LocalizationNN(nn.Module):
 
     def __init__(self):
@@ -81,63 +64,6 @@ class ResidualLocalizationNN(nn.Module):
 
         return x
 
-parser = ArgumentParser(description="Parameters for training the localization model")
-parser.add_argument("--epochs", type=int, default=10, help="Number of epochs to train the model")
-parser.add_argument("--model", type=str, default="simple", choices=["simple", "mobilenet", "efficientnet", "residual"])
-args = parser.parse_args()
-epochs = args.epochs
-model_name = args.model
-
-if model_name == "mobilenet":
-    print("MobileNetV2")
-    model = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.DEFAULT)
-    
-    original_conv1 = model.features[0][0]
-    model.features[0][0] = nn.Conv2d(1, original_conv1.out_channels, 
-                                     kernel_size=original_conv1.kernel_size, 
-                                     stride=original_conv1.stride, 
-                                     padding=original_conv1.padding, 
-                                     bias=False)
-    
-    with torch.no_grad():
-        model.features[0][0].weight.data = original_conv1.weight.data.mean(dim=1, keepdim=True)
-    
-    num_features = model.classifier[1].in_features
-    model.classifier = nn.Sequential(
-        nn.Dropout(p=0.2),
-        nn.Linear(num_features, 2)
-    )
-
-elif model_name == "efficientnet":
-    print("EfficientNet-B0")
-    model = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights.DEFAULT)
-    
-    original_conv1 = model.features[0][0]
-    model.features[0][0] = nn.Conv2d(1, original_conv1.out_channels, 
-                                     kernel_size=original_conv1.kernel_size, 
-                                     stride=original_conv1.stride, 
-                                     padding=original_conv1.padding, 
-                                     bias=False)
-    with torch.no_grad():
-        model.features[0][0].weight.data = original_conv1.weight.data.mean(dim=1, keepdim=True)
-
-    num_features = model.classifier[1].in_features
-    model.classifier = nn.Sequential(
-        nn.Dropout(p=0.2), 
-        nn.Linear(num_features, 2)
-    )
-
-elif model_name == "residual":
-    model = ResidualLocalizationNN()
-
-elif model_name == "ff":
-    print("LocalizationNN")
-    model = LocalizationNN()
-
-model = model.to(device)
-criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=1e-4)
-
 def train(num_epochs):
     save_path = model_name
     os.makedirs(save_path, exist_ok=True)
@@ -187,6 +113,81 @@ def test():
     return avg_test_loss
 
 if __name__ == "__main__":    
+
+    parser = ArgumentParser(description="Parameters for training the localization model")
+    parser.add_argument("--epochs", type=int, default=10, help="Number of epochs to train the model")
+    parser.add_argument("--model", type=str, default="simple", choices=["simple", "mobilenet", "efficientnet", "residual"])
+    args = parser.parse_args()
+    epochs = args.epochs
+    model_name = args.model
+
+    device = "mps"
+    MODE = "TEST"
+    BATCH_SIZE = 8
+
+    localization = Localization()
+
+    if MODE == "TRAIN":
+        train_dataset, test_dataset = random_split(dataset = localization, lengths = [0.9, 0.1])
+    elif MODE == "TEST":
+        train_dataset, test_dataset = random_split(dataset = localization, 
+                                                lengths = [0.1, 0.9], 
+                                                generator = torch.Generator().manual_seed(42)
+                                                )
+
+    train_dataloader = DataLoader(dataset = train_dataset, batch_size = BATCH_SIZE, shuffle = True)
+    test_dataloader = DataLoader(dataset = test_dataset, batch_size = BATCH_SIZE, shuffle = True)
+
+    if model_name == "mobilenet":
+        print("MobileNetV2")
+        model = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.DEFAULT)
+        
+        original_conv1 = model.features[0][0]
+        model.features[0][0] = nn.Conv2d(1, original_conv1.out_channels, 
+                                        kernel_size=original_conv1.kernel_size, 
+                                        stride=original_conv1.stride, 
+                                        padding=original_conv1.padding, 
+                                        bias=False)
+        
+        with torch.no_grad():
+            model.features[0][0].weight.data = original_conv1.weight.data.mean(dim=1, keepdim=True)
+        
+        num_features = model.classifier[1].in_features
+        model.classifier = nn.Sequential(
+            nn.Dropout(p=0.2),
+            nn.Linear(num_features, 2)
+        )
+
+    elif model_name == "efficientnet":
+        print("EfficientNet-B0")
+        model = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights.DEFAULT)
+        
+        original_conv1 = model.features[0][0]
+        model.features[0][0] = nn.Conv2d(1, original_conv1.out_channels, 
+                                        kernel_size=original_conv1.kernel_size, 
+                                        stride=original_conv1.stride, 
+                                        padding=original_conv1.padding, 
+                                        bias=False)
+        with torch.no_grad():
+            model.features[0][0].weight.data = original_conv1.weight.data.mean(dim=1, keepdim=True)
+
+        num_features = model.classifier[1].in_features
+        model.classifier = nn.Sequential(
+            nn.Dropout(p=0.2), 
+            nn.Linear(num_features, 2)
+        )
+
+    elif model_name == "residual":
+        model = ResidualLocalizationNN()
+
+    elif model_name == "simple":
+        print("LocalizationNN")
+        model = LocalizationNN()
+
+    model = model.to(device)
+    criterion = nn.MSELoss()
+    optimizer = optim.Adam(model.parameters(), lr=1e-4)
+
     print(f"Starting training for {model_name}...")
     train_losses = train(epochs)
     test_loss = test()
