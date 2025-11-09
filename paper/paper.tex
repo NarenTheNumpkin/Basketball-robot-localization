@@ -92,14 +92,14 @@ floor to achieve self-localization on the basketball field.
 
 \section{Introduction}
 \par \noindent
-The DD-Robocon is the Indian national entry-level competition to Asia-Pacific Robot Contest (ABU Robocon).
+The DD Robocon is the Indian national entry level competition to Asia Pacific Robot Contest (ABU Robocon).
 The objective of the competition is for college teams to design, build, and operate robots to complete certain tasks.
 The tasks vary each year and are usually based on cultural, historical, or technological themes related to the host country of the international contest.
 For Robocon 2025, the theme was Robot Basketball, where two robots had to play the game of basketball following specific rules.
 The arena consisted of a court of dimensions 15m $\times$ 8m and baskets at a height of 2.4m.
 Due to the nature of the game, the robots had to move quickly and unpredictably, and take shots from various positions on the court.
-The robots had to have robust and real-time self-localization determine it's distance from the basket.
-In this paper we propose a vision-based localization system based on the white field lines of the basketball court.
+The robots had to have robust and real time self localization determine it's distance from the basket.
+In this paper we propose a vision based localization system based on the white field lines of the basketball court.
 \par \noindent
 \textbf{Section II} reviews existing methods and prior research related to this work.
 \textbf{Section III} provides a detailed description of our proposed algorithm, approach, and model architecture.
@@ -107,11 +107,11 @@ In this paper we propose a vision-based localization system based on the white f
 \textbf{Section V} discusses previous approaches which failed.
 \textbf{Section VI} evaluates the accuracy of our approach and discusses potential directions for future work.
 \section{Related Work}
-\par \noindent In vision-based self-localization for dynamic field sports, 
+\par \noindent In vision based self localization for dynamic field sports, 
 researchers have explored complementary lines of work that balance geometric modeling, 
 probabilistic estimation, and learned perception.
 Liu et al.~\cite{liu2009} introduced a
-pose--point matching method for omnidirectional cameras in which white field lines are 
+pose point matching method for omnidirectional cameras in which white field lines are 
 detected from brightness changes, corrected for lens effects, and matched against a 
 field model to recover position and heading in real time with errors reported on the 
 order of tens of centimeters.
@@ -122,10 +122,10 @@ which makes frequent global updates practical when calibration and line extracti
 are reliable.
 Watanabe et al.~\cite{watanabe2020} framed model matching as a search 
 problem and optimized the robot pose with a genetic algorithm driven by omnidirectional 
-white--line features, which helps in scenes with sparse or ambiguous cues while requiring 
+white line features, which helps in scenes with sparse or ambiguous cues while requiring 
 careful parameterization to remain real time.
 \par \noindent Lu et al.~\cite{lu2013} reported a robust 
-real--time pipeline based on omnidirectional vision that emphasizes efficient feature 
+real time pipeline based on omnidirectional vision that emphasizes efficient feature 
 extraction and stable operation during matches, though performance naturally depends 
 on lighting and occlusions typical of indoor arenas.
 On humanoid platforms, Tian et 
@@ -133,17 +133,17 @@ al.~\cite{tian2010} adapted Monte Carlo Localization to fisheye optics and biped
 gait by designing a motion model for oscillatory head movement and a vision model 
 for field landmarks, together with a resampling strategy that stabilized estimates 
 on limited hardware.
-Fusion-based designs combine complementary sensing to limit drift 
+Fusion based designs combine complementary sensing to limit drift 
 and maintain responsiveness, Ismail et al.~\cite{ismail2012} fused encoder and gyro 
 odometry with omnivision in a particle filter so that fast motion updates are anchored
-by drift-free visual corrections even on symmetric fields.
+by drift free visual corrections even on symmetric fields.
 \par \noindent More recent work uses inertial
 constraints to stabilize vision before geometric reasoning, Nadiri et al.~\cite{nadiri2025}
-filtered IMU orientation and applied inverse perspective mapping to obtain a bird’s-eye view
+filtered IMU orientation and applied inverse perspective mapping to obtain a bird’s eye view
 from which field markers provide consistent distances on approximately planar surfaces.
-Learning-based perception is widely used to localize robots relative to other agents
+Learning based perception is widely used to localize robots relative to other agents
 rather than only to the field, Luo et al.~\cite{luo2020} detected robots with a convolutional
-detector and estimated 3D positions through RGB--D registration on embedded hardware, improving 
+detector and estimated 3D positions through RGBD registration on embedded hardware, improving 
 robustness to appearance variation at the cost of additional calibration and power.
 \end{multicols} 
 
@@ -156,28 +156,28 @@ robustness to appearance variation at the cost of additional calibration and pow
 \textbf{Author \& Year} & \textbf{Camera Type} & \textbf{Methodology} & \textbf{Performance} & \textbf{Limitations} \\ 
 \midrule
 \addlinespace
-\textbf{Liu et al, 2009} & Omnidirectional & Extracts white line feature points from brightness changes and matches them to model pose points for position \& heading estimation.
+\textbf{Liu et al, 2009} & Omnidirectional & Extracts white line feature points from brightness changes and matches them to model “pose points” for position \& heading estimation.
 & Achieves approx. 20 fps with approx. 20 cm mean error, robust to changes in goal color.
 & Relies on good visibility of white lines, requires careful distortion correction.
 \\ 
 \addlinespace
-\textbf{Ribeiro et al, 2016} & Omnidirectional & Uses precomputed distance maps of field lines, matches observed line points to the least-error grid cell given a known heading.
+\textbf{Ribeiro et al, 2016} & Omnidirectional & Uses precomputed distance maps of field lines, matches observed line points to the least error grid cell given a known heading.
 & Allows for very fast global localization and frequent updates.
 & Needs an accurate heading and precise field calibration, performance degrades with poor line detection.
 \\ 
 \addlinespace
-\textbf{Watanabe et al, 2020} & Omnidirectional & Combines white line detection with a Genetic Algorithm to optimize the pose model match.
+\textbf{Watanabe et al, 2020} & Omnidirectional & Combines white line detection with a Genetic Algorithm (GA) to optimize the pose model match.
 & Provides robust performance even with sparse line cues and enables an effective global search.
-& Requires tuning the GA for real time performance, has a higher computational cost than analytic matchers.
+& Requires tuning the GA for real-time performance, has a higher computational cost than analytic matchers.
 \\ 
 \addlinespace
 \textbf{Luo et al, 2019/2020} & RGB + Kinect v2 Depth & A two stage process where YOLOv2 detects robots in RGB, and then Kinect depth data is used to recover their 3D positions.
 & High Mean Average Precision (mAP), robust against changes in jersey color.
-& Requires an active depth sensor (limiting it to indoor use), cross sensor calibration, and has extra power demands.
+& Requires an active depth sensor, cross sensor calibration, and has extra power demands.
 \\ 
 \addlinespace
 \textbf{Lu et al, 2013} & Omnidirectional & Employs a robust omnidirectional vision pipeline for feature extraction and localization.
-& Has demonstrated real time robustness in practical applications. & Sensitive to lighting conditions and occlusion.
+& Has demonstrated real-time robustness in practical applications. & Sensitive to lighting conditions and occlusion.
 \\ 
 \addlinespace
 \textbf{Tian et al, 2010} & Fisheye Lens & Implements a particle filter (Monte Carlo Localization) with vision and motion models, handling distortion and motion oscillation.
@@ -190,7 +190,7 @@ robustness to appearance variation at the cost of additional calibration and pow
 & Requires careful time synchronization, MCL remains compute heavy with sparse data.
 \\ 
 \addlinespace
-\textbf{Nadiri et al, 2025} & Omnidirectional + IMU & Uses an IMU stabilized camera with a Bird’s Eye View transformation for marker detection.
+\textbf{Nadiri et al, 2025} & Omnidirectional + IMU & Uses an IMU stabilized camera with a Bird’s Eye View (BEV) transformation for marker detection.
 & Reduces mean error by approximately 9 cm, the BEV simplifies distance measurement.
 & Demands reliable IMU calibration, sensitive to errors in camera setup.
 \\ 
@@ -202,14 +202,14 @@ robustness to appearance variation at the cost of additional calibration and pow
 
 \vspace{0.5cm}
 
-\noindent Unlike most of the reviewed approaches, which rely heavily on omnidirectional or fisheye optics to maximize field-of-view for white line detection, 
-our method uses a regular monocular camera while still achieving reliable self-localization.
+Unlike most of the reviewed approaches, which rely heavily on omnidirectional or fisheye optics to maximize field of view for white line detection, 
+our method uses a regular monocular camera while still achieving reliable self localization.
 This choice reduces the need for specialized distortion 
 correction pipelines, and makes the approach more adaptable to standard camera modules already used in many robotics platforms.
 \begin{multicols}{2} % Resume columns after table
 
 \section{Methodology}
-\par \noindent Our approach is a two-step process that begins with \textbf{Preprocessing} the image,
+\par \noindent Our approach is a two step process that begins with \textbf{Preprocessing} the image,
 followed by passing it to the model for \textbf{Inference}.
 \subsection{Preprocessing}
 \par \noindent The input image having dimensions (640 $\times$ 480 $\times$ 3) is converted from the RGB color space to the HSV color space, then the white regions are masked out using two predefined HSV ranges.
@@ -262,7 +262,7 @@ down to the range [0, 1].
 The resulting image with dimensions (640 $\times$ 280 $\times$ 1) is flattened into a vector 
 of size 1,79,200 and passed through the first linear layer, followed by a ReLU activation function.
 The subsequent layers have sizes 1024, 256, and 64, each followed by a ReLU activation.
-The final layer outputs a 2-dimensional vector representing the predicted $x$ and $y$ positions of the robot.
+The final layer outputs a 2 dimensional vector representing the predicted $x$ and $y$ positions of the robot.
 \par \noindent
 The rationale for using this relatively simple model lies in the simplicity of the input images 
 and to reducing inference time.
@@ -325,7 +325,7 @@ Figure~\ref{fig:comparison} shows the plot between
 the ground truth and the prediction made by the model for these 8 images.
 \par \noindent
 Table~\ref{tab:prediction_loss} illustrates the x and y losses for a corresponding number of test iterations.
-Figure~\ref{fig:x_loss} and Figure~\ref{fig:y_loss} show the graphical representation of this loss.
+Figure~\ref{fig:x_loss} and Figure~\ref{fig:y_loss} show the%  graphical repr% esentation of this loss.
 \par \noindent
 A Pearson correlation test was performed to determine if the prediction loss was dependent on the number of test iterations. For the x loss, the test yielded a p-value of 0.40. Since this value is well above the significance level of 0.05, we conclude that there is no statistically significant evidence of a relationship, indicating that the x loss is independent of the number of iterations. In contrast, the test for the y loss yielded a p-value of 0.01. This value is below 0.05, indicating a statistically significant negative correlation where the loss tends to decrease as iterations increase. A detailed breakdown of these calculations is provided below.
 \par \noindent 
@@ -371,24 +371,79 @@ The code for the paper can be found in the following repository:
  \captionof{figure}{Ground truth vs prediction}\label{fig:comparison}
 }
 
-\subsection{t-test for Correlation Significance}
-\par \noindent
-A t-test was used to determine the statistical significance of the Pearson correlation coefficient (r). The test evaluates the null hypothesis ($H_0$) that there is no linear relationship between the variables. 
-The t-statistic is calculated using the formula:
-$$ t = r \frac{\sqrt{n-2}}{\sqrt{1-r^2}} $$
-where $n$ is the number of data pairs and $n-2$ gives the degrees of freedom (df). The calculated t-statistic is then compared to a critical t-value from the t-distribution for a given significance level ($\alpha=0.05$) and df. If the calculated t-statistic is more extreme than the critical value, $H_0$ is rejected.
-
-
 \subsubsection{Iterations vs. x loss}
+\par \noindent
 For this test, we used 9 data pairs, obtained a Pearson correlation of $r=-0.32$, and computed the degrees of freedom as $df = 7$ ($n-2$).
-The t-statistic is calculated as:
+The t-statistic is calculated as
 $$ t = -0.32 \frac{\sqrt{9-2}}{\sqrt{1 - (-0.32)^2}} = \frac{-0.8467}{0.9474} \approx -0.89 $$
-The two tailed critical t-value for $\alpha=0.05$ and df=7 is $\pm2.365$. Since our calculated t-statistic of -0.89 is greater than -2.365, we fail to reject the null hypothesis. The corresponding p-value is 0.40. This confirms there is no statistically significant relationship. 
+The two tailed critical t-value for $\alpha=0.05$ and df=7 is $\pm2.365$. Since our calculated t-statistic of -0.89 is greater than -2.365, we fail to reject the null hypothesis. The corresponding p value is 0.40. This confirms there is no statistically significant relationship. 
 
 \noindent At $\alpha=0.05$ there is insufficient evidence of a linear association between iterations and x loss. The observed correlation (r = -0.32) is small and likely due to sampling variability rather than a true effect.
 \\
-% \subsubsection{Iterations vs. y loss}
-% A corresponding test for iterations vs. y loss yielded $p=0.01<0.05$. Therefore, we reject $H_0$ and conclude there is a statistically significant negative linear relationship between iterations and y loss, indicating that y loss tends to decrease as the number of iterations increases.
+\subsubsection{Iterations vs. y loss}
+\par \noindent
+A corresponding test for iterations vs. y loss yielded $p=0.01<0.05$. Therefore, we reject $H_0$ and conclude there is a statistically significant negative linear relationship between iterations and y loss, indicating that y loss tends to decrease as the number of iterations increases.
+$$ t = -0.67 \frac{\sqrt{9-2}}{\sqrt{1 - (-0.67)^2}} = \frac{-1.7727}{0.7424} \approx -2.39 $$
+
+\subsection{Comparision and Analysis}
+\par \noindent
+Two models were chosen as a baseline, EfficientNet-B0 and MobileNetV2 due to their ability to run on 
+efficiently edge devices which is particularly suitable for faster inference time.
+\subsubsection{MobilenetV2}
+\par \noindent
+MobilenetV2 is built on depthwise separable convolutions and inverted residual blocks with linear bottlenecks. A standard $k{\times}k$ convolution with $M$ input and $N$ output channels over a $D_F{\times}D_F$ map costs
+\begin{equation}
+\mathrm{Cost}_{\text{std}} = D_K^2 \cdot M \cdot N \cdot D_F^2
+\end{equation}
+Depthwise separable convolutions reduce this to
+\begin{equation}
+\mathrm{Cost}_{\text{dw-sep}} = D_K^2 \cdot M \cdot D_F^2 \;+\; M \cdot N \cdot D_F^2
+\end{equation}
+% With width multiplier $\alpha\!\in\!(0,1]$ and resolution multiplier $\rho\!\in\!(0,1]$ (as in MobilenetV2), the cost is:
+% \begin{equation}
+% \mathrm{Cost}_{\alpha,\rho} = D_K^2 \cdot (\alpha M) \cdot (\rho D_F)^2 \;+\; (\alpha M)\cdot(\alpha N)\cdot(\rho D_F)^2.
+% \end{equation}
+A depthwise separable block can be written as
+\begin{equation}
+y = \mathrm{Conv}_{1\times1}\!\Big(\sigma\!\big(\mathrm{BN}(\mathrm{Conv}_{\text{dw}}(x))\big)\Big)
+\end{equation}
+where BN is batch normalization and $\phi$ is a non linear operator
+MobilenetV2’s inverted residual with linear bottleneck has the operator flow
+\begin{align}
+z &= \phi\!\big(\mathrm{BN}(\mathrm{Conv}^{\text{expand}}_{1\times1}(x))\big) \\
+u &= \phi\!\big(\mathrm{BN}(\mathrm{Conv}^{\text{dw}}_{k\times k}(z))\big) \\
+y &= \mathrm{BN}(\mathrm{Conv}^{\text{proj}}_{1\times1}(u))
+\end{align}
+
+\subsubsection{EfficientNet}
+\par \noindent
+EfficientNet scales a baseline using compound scaling of depth ($d$), width ($w$), and resolution ($r$). For a global coefficient $\phi \ge 0$ and constants $\alpha,\beta,\gamma>0$:
+\begin{align}
+d &= \alpha^{\phi}, \\
+w &= \beta^{\phi}, \\
+r &= \gamma^{\phi}, \\
+&\text{subject to } \alpha \cdot \beta^{2} \cdot \gamma^{2} \approx \kappa.
+\end{align}
+The FLOPs then scale approximately as:
+\begin{equation}
+\mathrm{FLOPs}(\phi) \propto d \cdot w^{2} \cdot r^{2}
+= \alpha^{\phi}\beta^{2\phi}\gamma^{2\phi}.
+\end{equation}
+The backbone uses MBConv (inverted residual) blocks with squeeze-and-excitation (SE) and SiLU/Swish. A simplified MBConv with SE:
+\begin{align}
+z &= \phi\!\big(\mathrm{BN}(\mathrm{Conv}^{\text{expand}}_{1\times1}(x))\big), \\
+u &= \phi\!\big(\mathrm{BN}(\mathrm{Conv}^{\text{dw}}_{k\times k, s}(z))\big), \\
+s &= \sigma\!\big(W_2\,\delta(W_1\,\mathrm{GAP}(u))\big) \odot u, \\
+y &= \mathrm{BN}(\mathrm{Conv}^{\text{proj}}_{1\times1}(s)).
+\end{align}
+Skip connection:
+\begin{equation}
+\hat y =
+\begin{cases}
+x + y, & \text{if } s=1 \text{ and } C_{\text{out}}=C_{\text{in}},\\
+y, & \text{otherwise.}
+\end{cases}
+\end{equation}
 
 \subsection{Hardware Performance}
 \begin{table}[H]
@@ -431,17 +486,17 @@ where $x$ is the input, $x'$ is the baseline input, and $F$ is the model's outpu
 \par \noindent
 This technique helped us identify which parts of the scene were most important for the model's localization decisions.
 In our experiments, the attributions often concentrated on regions containing field lines and other spatial cues, suggesting that the model relies heavily on geometric features.
-\end{multicols} 
+\end{multicols} % End columns for full-width figure
 \begin{center}
     \includegraphics[scale=0.5]{../results/sample005_figure.png}
     \captionof{figure}{Saliency Maps}\label{fig:comparison}
 \end{center}
-\begin{multicols}{2} 
+\begin{multicols}{2} % Resume columns after figure
 
 \section{Failed Approaches}
 
 \par \noindent
-In our earlier methodology, we employed an odometry based approach for the self localization of the robots.
+In our earlier methodology, we employed an odometry-based approach for the self-localization of the robots.
 This system integrated wheel encoders and an Inertial Measurement Unit (IMU), complemented by a TF-Luna LiDAR sensor to estimate the depth between the robot and the basket.
 However, the TF-Luna sensor demonstrated a limited effective range of approximately 3 to 4 meters and exhibited suboptimal accuracy within this range.
 Additionally, a significant challenge arose due to the absence of a clearly distinguishable object or surface on the basket, which hindered reliable depth estimation.
@@ -461,14 +516,14 @@ While this approach facilitated a simplified method for distance estimation, it 
 \par \noindent
 We improved upon the object detection approach by using the MiDaS\cite{ranftl2020midas} (Multiple Depth Estimation Accuracy with Single Network) deep learning model.
 MiDaS is a designed for monocular depth estimation, i.e., predicting depth from a single image.
-It uses a ResNet based encoder-decoder architecture where the encoder extracts features from the input image and the decoder upsamples these features to produce a depth map.
+It uses a ResNet based encoder decoder architecture where the encoder extracts features from the input image and the decoder upsamples these features to produce a depth map.
 The approach combines the YOLOv8 model with the MiDaS depth estimation framework for relative depth prediction.
 The pipeline begins by loading an input image, followed by inference using the YOLO model to localize the basket and identify its center.
 Simultaneously, MiDaS processes the same image to generate a dense relative depth map.
 Once the basket is detected, the relative depth at the center of the bounding box is extracted from the depth map.
 An interactive calibration step is used to relate MiDaS's relative depth to real world distance.
 The user is prompted to enter known ground truth distances for three distinct positions.
-These pairs of relative depth and real distance are then used to fit a linear regression model, enabling real time conversion of relative depth to metric distance.
+These pairs of relative depth and real distance are then used to fit a linear regression model, enabling real-time conversion of relative depth to metric distance.
 During tracking mode, the system periodically predicts the basket's distance using the learned regression model and overlays the result on the original image alongside the visualized depth map.
 The output is displayed in a side by side format showing both RGB and color mapped depth views for easier interpretation.
 
@@ -487,7 +542,7 @@ in the Robocon 2025 arena.
 Our approach relies solely on floor images processed through a lightweight
 feedforward neural network.
 By preprocessing the images to highlight salient floor features and using a simple architecture, 
-we achieved an average prediction error of approximately 0.1463 meters in x direction and 0.1506 meters in the y direction, demonstrating the potential of 
+we achieved an average prediction error of approximately 0.06 meters, demonstrating the potential of 
 learning-based localization methods.
 This result shows that even with minimal sensor inputs and modest 
 model complexity, it is possible to achieve sufficiently accurate localization.
