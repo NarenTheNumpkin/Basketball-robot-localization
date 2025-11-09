@@ -1,19 +1,72 @@
 import torch
 import torch.nn as nn
-from model import LocalizationNN, test_dataloader
+from torch.utils.data import random_split, DataLoader
+from model import LocalizationNN, ResidualLocalizationNN
+from torchvision import models
 from torchinfo import summary
-from dataloader import PATH
+from dataloader import PATH, Localization
 import os
 import warnings
 from plot import plot
 import numpy as np
 
 warnings.filterwarnings("ignore")
+
+BATCH_SIZE = 8
+localization = Localization()
+train_dataset, test_dataset = random_split(dataset = localization, 
+                                               lengths = [0.1, 0.9], 
+                                               generator = torch.Generator().manual_seed(42)
+                                               )
+
+train_dataloader = DataLoader(dataset = train_dataset, batch_size = BATCH_SIZE, shuffle = True)
+test_dataloader = DataLoader(dataset = test_dataset, batch_size = BATCH_SIZE, shuffle = True)
+
 iterations = 100
+model_name = "mobilenet"
 
 print("Loading model.....")
-model = LocalizationNN()
-model.load_state_dict(torch.load(os.path.join("..", "pt", "localization_epoch15_20250625_182819.pt")))
+
+if model_name == "residual":
+    model = ResidualLocalizationNN()
+    model.load_state_dict(torch.load(os.path.join("residual", "localization_residual_epoch15_20251109_110342.pt")))    
+
+elif model_name == "efficientnet":
+    model = models.efficientnet_b0(weights=None)
+    original_conv1 = model.features[0][0]
+    model.features[0][0] = nn.Conv2d(1, original_conv1.out_channels, 
+                                     kernel_size=original_conv1.kernel_size, 
+                                     stride=original_conv1.stride, 
+                                     padding=original_conv1.padding, 
+                                     bias=False)
+    num_features = model.classifier[1].in_features
+    model.classifier = nn.Sequential(
+        nn.Dropout(p=0.2), 
+        nn.Linear(num_features, 2)
+    )
+    model_path = os.path.join("saved_models", "localization_efficientnet_epoch15_20251109_105024.pt") 
+    model.load_state_dict(torch.load(model_path))
+
+elif model_name == "mobilenet":
+    model = models.mobilenet_v2(weights=None)
+    original_conv1 = model.features[0][0]
+    model.features[0][0] = nn.Conv2d(1, original_conv1.out_channels, 
+                                     kernel_size=original_conv1.kernel_size, 
+                                     stride=original_conv1.stride, 
+                                     padding=original_conv1.padding, 
+                                     bias=False)
+    num_features = model.classifier[1].in_features
+    model.classifier = nn.Sequential(
+        nn.Dropout(p=0.2),
+        nn.Linear(num_features, 2)
+    )
+    model_path = os.path.join("saved_models", "localization_mobilenet_epoch15_20251109_105651.pt") 
+    model.load_state_dict(torch.load(model_path))
+
+else:
+    model = LocalizationNN()
+    model.load_state_dict(torch.load(os.path.join("saved_models", "localization_epoch15_20251107_104246.pt")))
+
 print("Loaded model")
 
 def main():
@@ -76,5 +129,5 @@ def synopsis():
 if __name__ == "__main__":
     # synopsis()
     # main()
-    specific(5)
-    #specific_iter(55)
+    print(specific(5)[0])
+    # specific_iter(15)

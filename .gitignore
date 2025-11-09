@@ -321,3 +321,7 @@ TSWLatexianTemp*
 __pycache__
 pt
 .DS_Store
+saved_models
+efficient_net/
+mobilenet/
+residual/

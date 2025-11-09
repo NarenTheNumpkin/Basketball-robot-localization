@@ -145,7 +145,7 @@ Learning-based perception is widely used to localize robots relative to other ag
 rather than only to the field, Luo et al.~\cite{luo2020} detected robots with a convolutional
 detector and estimated 3D positions through RGB--D registration on embedded hardware, improving 
 robustness to appearance variation at the cost of additional calibration and power.
-\end{multicols} % End columns for full-width table
+\end{multicols} 
 
 \begin{center}
 \captionof{table}{Comparison of Related Works}
@@ -156,7 +156,7 @@ robustness to appearance variation at the cost of additional calibration and pow
 \textbf{Author \& Year} & \textbf{Camera Type} & \textbf{Methodology} & \textbf{Performance} & \textbf{Limitations} \\ 
 \midrule
 \addlinespace
-\textbf{Liu et al, 2009} & Omnidirectional & Extracts white-line feature points from brightness changes and matches them to model “pose points” for position \& heading estimation.
+\textbf{Liu et al, 2009} & Omnidirectional & Extracts white line feature points from brightness changes and matches them to model pose points for position \& heading estimation.
 & Achieves approx. 20 fps with approx. 20 cm mean error, robust to changes in goal color.
 & Relies on good visibility of white lines, requires careful distortion correction.
 \\ 
@@ -166,31 +166,31 @@ robustness to appearance variation at the cost of additional calibration and pow
 & Needs an accurate heading and precise field calibration, performance degrades with poor line detection.
 \\ 
 \addlinespace
-\textbf{Watanabe et al, 2020} & Omnidirectional & Combines white-line detection with a Genetic Algorithm (GA) to optimize the pose model match.
+\textbf{Watanabe et al, 2020} & Omnidirectional & Combines white line detection with a Genetic Algorithm to optimize the pose model match.
 & Provides robust performance even with sparse line cues and enables an effective global search.
-& Requires tuning the GA for real-time performance, has a higher computational cost than analytic matchers.
+& Requires tuning the GA for real time performance, has a higher computational cost than analytic matchers.
 \\ 
 \addlinespace
-\textbf{Luo et al, 2019/2020} & RGB + Kinect v2 Depth & A two-stage process where YOLOv2 detects robots in RGB, and then Kinect depth data is used to recover their 3D positions.
+\textbf{Luo et al, 2019/2020} & RGB + Kinect v2 Depth & A two stage process where YOLOv2 detects robots in RGB, and then Kinect depth data is used to recover their 3D positions.
 & High Mean Average Precision (mAP), robust against changes in jersey color.
-& Requires an active depth sensor (limiting it to indoor use), cross-sensor calibration, and has extra power demands.
+& Requires an active depth sensor (limiting it to indoor use), cross sensor calibration, and has extra power demands.
 \\ 
 \addlinespace
 \textbf{Lu et al, 2013} & Omnidirectional & Employs a robust omnidirectional vision pipeline for feature extraction and localization.
-& Has demonstrated real-time robustness in practical applications. & Sensitive to lighting conditions and occlusion.
+& Has demonstrated real time robustness in practical applications. & Sensitive to lighting conditions and occlusion.
 \\ 
 \addlinespace
 \textbf{Tian et al, 2010} & Fisheye Lens & Implements a particle filter (Monte Carlo Localization) with vision and motion models, handling distortion and motion oscillation.
-& Manages non-Gaussian noise and multiple hypotheses, has been proven on hardware.
+& Manages non Gaussian noise and multiple hypotheses, has been proven on hardware.
 & Incurs a higher computational load, can suffer from pose aliasing in symmetric fields.
 \\ 
 \addlinespace
-\textbf{Ismail et al, 2012} & Omnidirectional + Odometry & Fuses data from odometry (which is fast but drifts) and omnidirectional vision with MCL (which is drift-free but slower).
+\textbf{Ismail et al, 2012} & Omnidirectional + Odometry & Fuses data from odometry (which is fast but drifts) and omnidirectional vision with MCL (which is drift free but slower).
 & Delivers accurate and responsive localization with low latency (approx. 1.6 ms).
-& Requires careful time synchronization, MCL remains compute-heavy with sparse data.
+& Requires careful time synchronization, MCL remains compute heavy with sparse data.
 \\ 
 \addlinespace
-\textbf{Nadiri et al, 2025} & Omnidirectional + IMU & Uses an IMU-stabilized camera with a Bird’s-Eye View (BEV) transformation for marker detection.
+\textbf{Nadiri et al, 2025} & Omnidirectional + IMU & Uses an IMU stabilized camera with a Bird’s Eye View transformation for marker detection.
 & Reduces mean error by approximately 9 cm, the BEV simplifies distance measurement.
 & Demands reliable IMU calibration, sensitive to errors in camera setup.
 \\ 
@@ -202,7 +202,7 @@ robustness to appearance variation at the cost of additional calibration and pow
 
 \vspace{0.5cm}
 
-Unlike most of the reviewed approaches, which rely heavily on omnidirectional or fisheye optics to maximize field-of-view for white-line detection, 
+\noindent Unlike most of the reviewed approaches, which rely heavily on omnidirectional or fisheye optics to maximize field-of-view for white line detection, 
 our method uses a regular monocular camera while still achieving reliable self-localization.
 This choice reduces the need for specialized distortion 
 correction pipelines, and makes the approach more adaptable to standard camera modules already used in many robotics platforms.
@@ -418,9 +418,9 @@ The two tailed critical t-value for $\alpha=0.05$ and df=7 is $\pm2.365$. Since 
 
 \subsection{Explainable AI}
 \par \noindent
-To better understand the decision-making process of our model, we employed the Integrated Gradients method~\cite{sundararajan2017axiomatic} to attribute the model's predictions to specific pixels in the input image.
-Integrated Gradients is a gradient-based attribution technique that satisfies desirable axioms such as sensitivity and implementation invariance.
-It computes feature attributions by integrating the gradients of the model's output with respect to the inputs, along a straight-line path from a baseline (typically a black image) to the actual input.
+To better understand the decision making process of our model, we employed the Integrated Gradients method~\cite{sundararajan2017axiomatic} to attribute the model's predictions to specific pixels in the input image.
+Integrated Gradients is a gradient based attribution technique that satisfies desirable axioms such as sensitivity and implementation invariance.
+It computes feature attributions by integrating the gradients of the model's output with respect to the inputs, along a straight line path from a baseline (typically a black image) to the actual input.
 This allows us to highlight the regions of the input that most influenced the model's prediction, thereby providing interpretability for both correct and incorrect decisions.
 \par \noindent
 Mathematically, the attribution for the $i$-th input feature is computed as:
@@ -431,17 +431,17 @@ where $x$ is the input, $x'$ is the baseline input, and $F$ is the model's outpu
 \par \noindent
 This technique helped us identify which parts of the scene were most important for the model's localization decisions.
 In our experiments, the attributions often concentrated on regions containing field lines and other spatial cues, suggesting that the model relies heavily on geometric features.
-\end{multicols} % End columns for full-width figure
+\end{multicols} 
 \begin{center}
     \includegraphics[scale=0.5]{../results/sample005_figure.png}
     \captionof{figure}{Saliency Maps}\label{fig:comparison}
 \end{center}
-\begin{multicols}{2} % Resume columns after figure
+\begin{multicols}{2} 
 
 \section{Failed Approaches}
 
 \par \noindent
-In our earlier methodology, we employed an odometry-based approach for the self-localization of the robots.
+In our earlier methodology, we employed an odometry based approach for the self localization of the robots.
 This system integrated wheel encoders and an Inertial Measurement Unit (IMU), complemented by a TF-Luna LiDAR sensor to estimate the depth between the robot and the basket.
 However, the TF-Luna sensor demonstrated a limited effective range of approximately 3 to 4 meters and exhibited suboptimal accuracy within this range.
 Additionally, a significant challenge arose due to the absence of a clearly distinguishable object or surface on the basket, which hindered reliable depth estimation.
@@ -461,16 +461,16 @@ While this approach facilitated a simplified method for distance estimation, it 
 \par \noindent
 We improved upon the object detection approach by using the MiDaS\cite{ranftl2020midas} (Multiple Depth Estimation Accuracy with Single Network) deep learning model.
 MiDaS is a designed for monocular depth estimation, i.e., predicting depth from a single image.
-It uses a ResNet-based encoder-decoder architecture where the encoder extracts features from the input image and the decoder upsamples these features to produce a depth map.
+It uses a ResNet based encoder-decoder architecture where the encoder extracts features from the input image and the decoder upsamples these features to produce a depth map.
 The approach combines the YOLOv8 model with the MiDaS depth estimation framework for relative depth prediction.
 The pipeline begins by loading an input image, followed by inference using the YOLO model to localize the basket and identify its center.
 Simultaneously, MiDaS processes the same image to generate a dense relative depth map.
 Once the basket is detected, the relative depth at the center of the bounding box is extracted from the depth map.
-An interactive calibration step is used to relate MiDaS's relative depth to real-world distance.
-The user is prompted to enter known ground-truth distances for three distinct positions.
-These pairs of relative depth and real distance are then used to fit a linear regression model, enabling real-time conversion of relative depth to metric distance.
+An interactive calibration step is used to relate MiDaS's relative depth to real world distance.
+The user is prompted to enter known ground truth distances for three distinct positions.
+These pairs of relative depth and real distance are then used to fit a linear regression model, enabling real time conversion of relative depth to metric distance.
 During tracking mode, the system periodically predicts the basket's distance using the learned regression model and overlays the result on the original image alongside the visualized depth map.
-The output is displayed in a side-by-side format showing both RGB and color-mapped depth views for easier interpretation.
+The output is displayed in a side by side format showing both RGB and color mapped depth views for easier interpretation.
 
 \vspace{0.5cm}
 { \centering
@@ -487,7 +487,7 @@ in the Robocon 2025 arena.
 Our approach relies solely on floor images processed through a lightweight
 feedforward neural network.
 By preprocessing the images to highlight salient floor features and using a simple architecture, 
-we achieved an average prediction error of approximately 0.06 meters, demonstrating the potential of 
+we achieved an average prediction error of approximately 0.1463 meters in x direction and 0.1506 meters in the y direction, demonstrating the potential of 
 learning-based localization methods.
 This result shows that even with minimal sensor inputs and modest 
 model complexity, it is possible to achieve sufficiently accurate localization.
