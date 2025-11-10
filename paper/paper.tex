@@ -7,6 +7,7 @@
 \usepackage{algpseudocode}
 \usepackage{cuted}
 \usepackage{booktabs}
+\usepackage{float}
 
 \titleformat{\section}{\centering\large\scshape}{\thesection}{1em}{}
 \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{1em}{}
@@ -73,6 +74,7 @@
 \setlength{\parindent}{0.5cm}
 
 \begin{multicols}{2}
+% \raggedcolumns
 \setlength{\columnsep}{0.5cm}
 
 \noindent \textbf{\textit{Abstract---}
@@ -82,7 +84,7 @@ In Robocon 2025, accurate and
 reliable localization is crucial for improving shooting precision, avoiding 
 collisions with other robots, and navigating the competition field efficiently.
 In this paper, we propose a hybrid localization algorithm that integrates classical 
-techniques with learning-based methods, relying solely on visual data from the court’s
+techniques with learning based methods that rely solely on visual data from the court’s
 floor to achieve self-localization on the basketball field.
 }
 
@@ -201,7 +203,7 @@ robustness to appearance variation at the cost of additional calibration and pow
 \end{center}
 
 \vspace{0.5cm}
-
+\par \noindent
 Unlike most of the reviewed approaches, which rely heavily on omnidirectional or fisheye optics to maximize field of view for white line detection, 
 our method uses a regular monocular camera while still achieving reliable self localization.
 This choice reduces the need for specialized distortion 
@@ -263,6 +265,7 @@ The resulting image with dimensions (640 $\times$ 280 $\times$ 1) is flattened i
 of size 1,79,200 and passed through the first linear layer, followed by a ReLU activation function.
 The subsequent layers have sizes 1024, 256, and 64, each followed by a ReLU activation.
 The final layer outputs a 2 dimensional vector representing the predicted $x$ and $y$ positions of the robot.
+
 \par \noindent
 The rationale for using this relatively simple model lies in the simplicity of the input images 
 and to reducing inference time.
@@ -272,9 +275,9 @@ and to reducing inference time.
  \captionof{figure}{Flow diagram}\label{fig:model}
 }
 
-\vspace{-0.5cm}
+% \vspace{-0.3cm}
 { \centering
- \includegraphics[width=1.0\columnwidth]{../results/arch.png}\\
+ \includegraphics[width=0.9\columnwidth]{../results/arch.png}\\
  \captionof{figure}{Architecture diagram}\label{fig:model}
 }
 
@@ -387,7 +390,7 @@ $$ t = -0.67 \frac{\sqrt{9-2}}{\sqrt{1 - (-0.67)^2}} = \frac{-1.7727}{0.7424} \a
 
 \subsection{Comparision and Analysis}
 \par \noindent
-Two models were chosen as a baseline, EfficientNet-B0 and MobileNetV2 due to their ability to run on 
+Two models were chosen as a baseline, EfficientNet-B\cite{tan2019efficientnet} and MobileNetV2\cite{sandler2018mobilenetv2} due to their ability to run on 
 efficiently edge devices which is particularly suitable for faster inference time.
 \subsubsection{MobilenetV2}
 \par \noindent
@@ -407,29 +410,20 @@ A depthwise separable block can be written as
 \begin{equation}
 y = \mathrm{Conv}_{1\times1}\!\Big(\sigma\!\big(\mathrm{BN}(\mathrm{Conv}_{\text{dw}}(x))\big)\Big)
 \end{equation}
-where BN is batch normalization and $\phi$ is a non linear operator
-MobilenetV2’s inverted residual with linear bottleneck has the operator flow
+where BN is batch normalization and $\sigma$ is a non linear operator,
+MobilenetV2 with inverted residual blocks and linear bottleneck has the operator flow
 \begin{align}
 z &= \phi\!\big(\mathrm{BN}(\mathrm{Conv}^{\text{expand}}_{1\times1}(x))\big) \\
 u &= \phi\!\big(\mathrm{BN}(\mathrm{Conv}^{\text{dw}}_{k\times k}(z))\big) \\
 y &= \mathrm{BN}(\mathrm{Conv}^{\text{proj}}_{1\times1}(u))
 \end{align}
 
-\subsubsection{EfficientNet}
+\subsubsection{EfficientNet-B0}
 \par \noindent
-EfficientNet scales a baseline using compound scaling of depth ($d$), width ($w$), and resolution ($r$). For a global coefficient $\phi \ge 0$ and constants $\alpha,\beta,\gamma>0$:
-\begin{align}
-d &= \alpha^{\phi}, \\
-w &= \beta^{\phi}, \\
-r &= \gamma^{\phi}, \\
-&\text{subject to } \alpha \cdot \beta^{2} \cdot \gamma^{2} \approx \kappa.
-\end{align}
-The FLOPs then scale approximately as:
-\begin{equation}
-\mathrm{FLOPs}(\phi) \propto d \cdot w^{2} \cdot r^{2}
-= \alpha^{\phi}\beta^{2\phi}\gamma^{2\phi}.
-\end{equation}
-The backbone uses MBConv (inverted residual) blocks with squeeze-and-excitation (SE) and SiLU/Swish. A simplified MBConv with SE:
+EfficientNet is a family of lightweight CNN backbones that pair a simple convolutional stem with stacked MBConv stages and a compact head. The network downsamples spatial resolution via staged strides across MBConv blocks and applies squeeze and excitation to recalibrate channels, and adopts SiLU/Swish activations for stable training. A global average pooling layer and a small fully connected head finalize the architecture. Model variants use a compound policy to jointly scale depth, width, and input resolution to meet different latency/accuracy targets without changing the block design.
+\par \noindent
+The backbone uses MBConv (inverted residual) blocks with squeeze-and-excitation (SE) and SiLU/Swish.
+A simplified MBConv with SE
 \begin{align}
 z &= \phi\!\big(\mathrm{BN}(\mathrm{Conv}^{\text{expand}}_{1\times1}(x))\big), \\
 u &= \phi\!\big(\mathrm{BN}(\mathrm{Conv}^{\text{dw}}_{k\times k, s}(z))\big), \\
@@ -445,41 +439,49 @@ y, & \text{otherwise.}
 \end{cases}
 \end{equation}
 
-\subsection{Hardware Performance}
 \begin{table}[H]
+\caption{Model Comparison}
+\label{tab:model_comparison}
 \centering
-\captionof{table}{Model Performance on Target Hardware}\label{tab:hardware_performance}
+\small
+\setlength{\tabcolsep}{4pt} % tighter columns
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Metric} & \textbf{Raspberry Pi 4} & \textbf{Jetson Nano} & \textbf{GeForce RTX 4060} \\ 
+Metric & \textbf{Feedforward} & \textbf{MobileNetV2} & \textbf{EfficientNet-B0} \\
 \midrule
-\addlinespace
-\textbf{Inference Time (ms)} &  & & 93 ms \\ 
-\addlinespace
-\textbf{Frames Per Second (FPS)} &  &  & 11 \\ 
-\addlinespace
-\textbf{CPU Usage (\%)} & & & 12\% (CPU) \\ 
-\addlinespace
-\textbf{Memory Usage (MB)} &  &  & 2.31 GB \\ 
-\addlinespace
-\textbf{Power Consumption (W)*} &  & & \textasciitilde85W \\ 
-\addlinespace
+\textbf{MSE} & 0.040 & 3.380 & 3.778 \\
+\textbf{Time (ms)}  & 3.283 & 4.213 & 4.373 \\
+\textbf{RAM} & 1.3 GB & 387 MB & 323 MB \\
+\textbf{Temperature} & 43.62°C & 43.69°C & 43.97°C  \\
 \bottomrule
-\multicolumn{4}{l}{}
 \end{tabular}%
 }
 \end{table}
+
+\par \noindent
+The above table shows the performance of the models on physical hardware on 100 samples. Our feedforward model achieves the lowest MSE and the fastest inference, primarily because its computation mainly involves a few dense matrix multiplications on a flattened preprocessed input. However, this design incurs higher memory usage, flattening a large spatial map into a 179{,}200-dimensional vector and feeding it into wide fully connected layers creates large weight matrices and activation tensors. In contrast, MobileNetV2 and EfficientNet-B0 are more memory-efficient due to depthwise separable convolutions and MBConv blocks, but they introduce slightly more latency on our setup.
+
+\par \noindent
+% Target deployment on NVIDIA Jetson Orin Nano is feasible. The module features a 1024-core NVIDIA Ampere architecture GPU with 32 Tensor Cores, a 6-core Arm Cortex-A78AE CPU, and 8 GB RAM. Our model’s low compute cost and simple control flow make it suitable for CPU-only or TensorRT-accelerated FP16/INT8 deployment on the GPU. Given the 8 GB memory ceiling, we recommend quantization and modest pruning to keep peak memory comfortably below system limits, while MobileNetV2/EfficientNet variants can also be accelerated efficiently using Tensor Cores if a convolutional front-end is preferred.
+
+\subsection{Hardware}
+\par \noindent
+All tests and measurements were performed on an NVIDIA Jetson Orin Nano. The module provides a 1024-core NVIDIA Ampere architecture GPU with 32 Tensor Cores, a 6-core Arm Cortex-A78AE CPU, and 8\,GB RAM. The reported latencies were obtained on this platform using batch size 1 and on-device acceleration.
+
+\par \noindent
+The models were trained on an Apple MPS and were exported to an ONNX format for inference on the Jeton Nano Orin
 
 \subsection{Explainable AI}
 \par \noindent
 To better understand the decision making process of our model, we employed the Integrated Gradients method~\cite{sundararajan2017axiomatic} to attribute the model's predictions to specific pixels in the input image.
 Integrated Gradients is a gradient based attribution technique that satisfies desirable axioms such as sensitivity and implementation invariance.
-It computes feature attributions by integrating the gradients of the model's output with respect to the inputs, along a straight line path from a baseline (typically a black image) to the actual input.
+It computes feature attributions by integrating the gradients of the model's output with respect to the inputs, along a straight line path from a baseline to the actual input.
 This allows us to highlight the regions of the input that most influenced the model's prediction, thereby providing interpretability for both correct and incorrect decisions.
 \par \noindent
 Mathematically, the attribution for the $i$-th input feature is computed as:
 \begin{equation}
+\nonumber
 \mathrm{IntegratedGradients}_i^{}(x) = (x_i - x'_i) \times \frac{1}{m} \sum_{k=1}^m \frac{\partial F\left(x' + \frac{k}{m} (x - x')\right)}{\partial x_i}
 \end{equation}
 where $x$ is the input, $x'$ is the baseline input, and $F$ is the model's output function.
@@ -614,6 +616,16 @@ R.~Ranftl, A.~Boedt, and V.~Koltun,
 ``Towards robust monocular depth estimation: Mixing datasets for zero-shot cross-dataset transfer,'' 
 \textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 
 vol.~44, no.~3, pp.~1623--1637, 2020.
+\bibitem{sandler2018mobilenetv2}
+M.~Sandler, A.~Howard, M.~Zhu, A.~Zhmoginov, and L.-C.~Chen,
+``MobileNetV2: Inverted residuals and linear bottlenecks,''
+in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+2018, pp.~4510--4520.
+\bibitem{tan2019efficientnet}
+M.~Tan and Q.~V.~Le,
+``EfficientNet: Rethinking model scaling for convolutional neural networks,''
+in \textit{Proceedings of the 36th International Conference on Machine Learning (ICML)},
+PMLR, 2019, pp.~6105--6114.
 
 \end{thebibliography}
 
